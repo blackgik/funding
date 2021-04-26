@@ -8,7 +8,7 @@ router.post("/user/sign-up", async (req, res) => {
 
   try {
     await newUser.save();
-    const token = newUser.generateToken();
+    const { token } = newUser.generateToken();
     res.status(201).json({
       success: true,
       message: "user created successfully",
