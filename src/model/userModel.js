@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-
     email: {
         type: String,
         required:true,
@@ -49,7 +48,13 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-
+    track: {
+        type: String,
+        required: true,
+        trim: true,
+        default: 'farmer',
+        enum: ['']
+    },
     password: {
         type: String,
         minlength: 6,
@@ -109,12 +114,18 @@ userSchema.statics.findUserByCredentials = async (email, password)=> {
 
 userSchema.pre('save', async function(next) {
     const user = this;
-    if(user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 8)
+    if(user.isModified('password')){
+        if (user.password === user.confirm_password){
+            user.password = await bcrypt.hash(user.password, 8)
+            user.confirm_password = await bcrypt.hash(user.password, 8)
+        }else{
+            throw new Error('passwords do not match')
+        }
     }
 
     next()
 })
+
 const User = mongoose.model('User', userSchema)
 
 module.exports = User;
