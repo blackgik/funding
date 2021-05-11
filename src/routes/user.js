@@ -5,6 +5,7 @@ const User = require("../model/userModel");
 // signing up the user
 router.post("/user/sign-up", async (req, res) => {
   const newUser = new User(req.body);
+  console.log(newUser);
 
   try {
     await newUser.save();
@@ -16,9 +17,10 @@ router.post("/user/sign-up", async (req, res) => {
       token,
     });
   } catch (e) {
+    console.log(e);
     res.status(400).json({
       success: false,
-      message: e,
+      message: "invalid res",
     });
   }
 });
@@ -27,6 +29,7 @@ router.post("/user/sign-up", async (req, res) => {
 // we need to get the users email, and ensure that the user exists in the database
 
 router.post("/user/sign-in", async (req, res) => {
+  console.log(req.body)
   try {
     const user = await User.findUserByCredentials(
       req.body.email,

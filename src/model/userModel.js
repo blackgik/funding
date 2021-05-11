@@ -53,9 +53,21 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         default: 'farmer',
-        enum: ['']
+        enum: ['farmer', 'investor', 'consultant']
     },
     password: {
+        type: String,
+        minlength: 6,
+        trim: true,
+        required: true,
+
+        validate(value) {
+            if(value.includes('password' || 'PASSWORD' || 123)) {
+                throw new Error('password contains simple keys')
+            }
+        }
+    },
+    confirmPassword:{
         type: String,
         minlength: 6,
         trim: true,
@@ -115,11 +127,12 @@ userSchema.statics.findUserByCredentials = async (email, password)=> {
 userSchema.pre('save', async function(next) {
     const user = this;
     if(user.isModified('password')){
-        if (user.password === user.confirm_password){
-            user.password = await bcrypt.hash(user.password, 8)
-            user.confirm_password = await bcrypt.hash(user.password, 8)
-        }else{
+        if (user.password !== user.confirmPassword){
             throw new Error('passwords do not match')
+        }else{
+            user.password = await bcrypt.hash(user.password, 8)
+            user.confirmPassword = await bcrypt.hash(user.password, 8)
+            
         }
     }
 
