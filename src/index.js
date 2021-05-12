@@ -8,9 +8,9 @@ const port = process.env.PORT || 4000;
 const app = express();
 
 // serving up the user route json middleware
+app.use(cors())
 app.use(express.json());
 app.use(UserRoute);
-app.use(cors())
 
 app.listen(port, () => {
   console.log(`server is up on port ${port}`);
