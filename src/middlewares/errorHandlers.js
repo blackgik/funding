@@ -13,7 +13,7 @@ const errorHandler = async (error,req, res, next) => {
 
     ]
 
-    if(error.name == 'crowdFunfding' && error.isOperational) {
+    if(error.name == 'crowdFunding' && error.isOperational) {
         next(error);
         return res.status(error.errorCode).send({
             success: false,
